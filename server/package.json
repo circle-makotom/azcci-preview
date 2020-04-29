@@ -40,10 +40,6 @@
             "pre-commit": "lint-staged"
         }
     },
-    "jest-junit": {
-        "addFileAttribute": true,
-        "outputDirectory": "server/test-results/jest"
-    },
     "lint-staged": {
         "*.{ts,tsx,js}": "eslint --fix",
         "*.{ts,tsx,js,css,md}": "prettier --write"
