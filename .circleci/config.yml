@@ -18,10 +18,18 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
+      - restore_cache:
+          keys:
+            - yarn-deps-{{ checksum "yarn.lock" }}
+            - yarn-deps
       - run:
           name: Install dependencies
           command: yarn install
           working_directory: server
+      - save_cache:
+          paths:
+            - server/node_modules
+          key: yarn-deps-{{ checksum "yarn.lock" }}
       - persist_to_workspace:
           root: ./
           paths:
