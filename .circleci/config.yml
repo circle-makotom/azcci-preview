@@ -1,0 +1,82 @@
+version: 2
+
+jobs:
+  calculate-version:
+    docker:
+      - image: alpine
+    steps:
+      - checkout
+      - run: echo 'TESTVERSION' > version.txt
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  server-install-dependencies:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Install dependencies
+          command: yarn install
+          working_directory: server
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  server-build-production:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Production build
+          command: |
+            export DECODE_BUILD_VERSION=$(cat ../version.txt)
+            yarn build
+          working_directory: server
+      - store_artifacts:
+          path: server/dist/server.js
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  server-test:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Run tests
+          command: yarn test
+          working_directory: server
+      - store_test_results:
+          path: server/junit.xml
+
+workflows:
+  version: 2
+  build-test-deploy-server:
+    jobs:
+      - calculate-version
+      - server-install-dependencies:
+          requires:
+            - calculate-version
+      - server-build-production:
+          requires:
+            - server-install-dependencies
+      - server-test
+      - server-deploy-approval:
+          type: approval
+          requires:
+            - server-build-production
+            - server-deploy
+
+  build-test-deploy-client:
+    jobs:
+      - calculate-version
