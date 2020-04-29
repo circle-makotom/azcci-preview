@@ -56,9 +56,12 @@ jobs:
           name: Run tests
           command: |
             export JEST_JUNIT_OUTPUT_DIR=test-results/jest
+            export JEST_JUNIT_ADD_FILE_ATTRIBUTE=true
             mkdir -p $JEST_JUNIT_OUTPUT_DIR
             yarn test:ci
           working_directory: server
+      - store_artifacts:
+          path: server/test-results
       - store_test_results:
           path: server/test-results
 
