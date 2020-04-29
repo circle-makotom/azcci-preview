@@ -32,6 +32,8 @@ jobs:
           paths:
             - server/node_modules
           key: yarn-deps-{{ checksum "server/yarn.lock" }}
+      - store_artifacts:
+          path: server/yarn.lock
       - persist_to_workspace:
           root: ./
           paths:
