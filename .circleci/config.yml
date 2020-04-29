@@ -20,7 +20,7 @@ jobs:
           at: ./
       - restore_cache:
           keys:
-            - yarn-deps-{{ checksum "yarn.lock" }}
+            - yarn-deps-{{ checksum "server/yarn.lock" }}
             - yarn-deps
       - run:
           name: Install dependencies
@@ -29,7 +29,7 @@ jobs:
       - save_cache:
           paths:
             - server/node_modules
-          key: yarn-deps-{{ checksum "yarn.lock" }}
+          key: yarn-deps-{{ checksum "server/yarn.lock" }}
       - persist_to_workspace:
           root: ./
           paths:
