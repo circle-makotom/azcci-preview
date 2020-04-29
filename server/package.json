@@ -8,7 +8,7 @@
         "prettier": "prettier --write .",
         "server": "node dist/server.js",
         "test": "jest --coverage",
-        "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit",
+        "test:ci": "jest --ci --coverage",
         "ts-node": "ts-node --files --project tsconfig.json src/main.ts"
     },
     "author": "Makoto Mizukami <makoto@circleci.com>",
