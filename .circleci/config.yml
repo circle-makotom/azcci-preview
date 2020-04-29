@@ -70,7 +70,9 @@ workflows:
       - server-build-production:
           requires:
             - server-install-dependencies
-      - server-test
+      - server-test:
+          requires:
+            - server-install-dependencies
       - server-deploy-approval:
           type: approval
           requires:
