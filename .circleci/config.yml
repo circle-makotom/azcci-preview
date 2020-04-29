@@ -65,7 +65,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            yarn test:ci
+            circleci tests glob '**/*.test.ts' | circleci tests split --split-by timings | xargs yarn test:ci
           working_directory: server
       - store_artifacts:
           path: server/test-results
