@@ -75,7 +75,7 @@ workflows:
           type: approval
           requires:
             - server-build-production
-            - server-deploy
+            - server-test
 
   build-test-deploy-client:
     jobs:
