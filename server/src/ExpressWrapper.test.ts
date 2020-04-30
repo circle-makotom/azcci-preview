@@ -15,14 +15,23 @@ jest.mock('express', () => {
 describe('Constructor', () => {
     const wrapper = new ExpressWrapper();
 
-    test('expApp.use and expApp.get is called at least once', () => {
+    test('expApp.use is called at least once', () => {
         expect(mockExpApp.use).toHaveBeenCalled();
-        expect(mockExpApp.get).toHaveBeenCalled();
     });
 
-    test('expApp.listen is called after calling startListening', async () => {
+    test('expApp.listen is called only after calling startListening', async () => {
         expect(mockExpApp.listen).not.toHaveBeenCalled();
         await wrapper.startListening();
         expect(mockExpApp.listen).toHaveBeenCalled();
+    });
+});
+
+describe('armEndpoint', () => {
+    const wrapper = new ExpressWrapper();
+
+    test('get', () => {
+        mockExpApp.get.mockClear();
+        wrapper.armEndpoint('GET', '/', () => void 0);
+        expect(mockExpApp.get).toHaveBeenCalled();
     });
 });

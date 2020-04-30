@@ -1,8 +1,6 @@
 import * as express from 'express';
 import { SerialNumber } from './services/SerialNumber';
 
-import { SerialNumberResponder } from './responders/SerialNumberResponder';
-
 import type * as http from 'http';
 
 declare const __BUILD_VERSION: string;
@@ -15,10 +13,6 @@ class ExpressWrapper {
         SerialNumber: new SerialNumber()
     };
 
-    public responders = {
-        SerialNumber: new SerialNumberResponder()
-    };
-
     private app: express.Express = express();
     private httpServers: http.Server[] = [];
 
@@ -26,8 +20,6 @@ class ExpressWrapper {
         this.app.use((req, res, next) =>
             this.setVersionInHeader(req, res, next)
         );
-
-        this.armEndpoints();
     }
 
     public startListening(): Promise<ExpressWrapper['httpServers']> {
@@ -58,7 +50,7 @@ class ExpressWrapper {
                     } catch (err) {
                         reject(err);
                     }
-                }).catch((err) => console.error(err));
+                }).catch(console.error.bind(console));
             });
 
             for (const promise of promises) {
@@ -83,18 +75,47 @@ class ExpressWrapper {
         next();
     }
 
-    private armEndpoints() {
-        this.app.get('/serial', (req, res) =>
-            this.responders.SerialNumber.getSerialNumber(
-                this.services,
-                req,
-                res
-            )
-        );
+    public armEndpoint(
+        methodRaw: string,
+        path: string,
+        boundResponder: (
+            services: ExpressWrapper['services'],
+            req: express.Request,
+            res: express.Response
+        ) => void
+    ) {
+        const method = methodRaw.toLowerCase();
 
-        this.app.get('/users', (req, res) =>
-            this.responders.SerialNumber.getUsers(this.services, req, res)
-        );
+        switch (method) {
+            case 'checkout':
+            case 'copy':
+            case 'delete':
+            case 'get':
+            case 'head':
+            case 'lock':
+            case 'merge':
+            case 'mkactivity':
+            case 'mkcol':
+            case 'move':
+            case 'm-search':
+            case 'notify':
+            case 'options':
+            case 'patch':
+            case 'post':
+            case 'purge':
+            case 'put':
+            case 'report':
+            case 'search':
+            case 'subscribe':
+            case 'trace':
+            case 'unlock':
+            case 'unsubscribe':
+                this.app[method](
+                    path,
+                    boundResponder.bind(null, this.services)
+                );
+                break;
+        }
     }
 }
 

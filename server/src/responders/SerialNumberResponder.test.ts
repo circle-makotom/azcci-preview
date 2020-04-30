@@ -39,13 +39,11 @@ const mockRes = () => {
 };
 
 describe('getSerialNumber', () => {
-    const serialNumberResponder = new SerialNumberResponder();
-
     const services = mockServices();
     const req = mockReq('test-user');
     const res = mockRes();
 
-    serialNumberResponder.getSerialNumber(
+    SerialNumberResponder.getSerialNumber(
         (<unknown>services) as ExpressWrapper['services'],
         (<unknown>req) as express.Request,
         (<unknown>res) as express.Response
@@ -65,13 +63,11 @@ describe('getSerialNumber', () => {
 });
 
 describe('getUsers', () => {
-    const serialNumberResponder = new SerialNumberResponder();
-
     const services = mockServices();
     const req = mockReq();
     const res = mockRes();
 
-    serialNumberResponder.getUsers(
+    SerialNumberResponder.getUsers(
         (<unknown>services) as ExpressWrapper['services'],
         (<unknown>req) as express.Request,
         (<unknown>res) as express.Response
@@ -93,9 +89,8 @@ describe('genMessageWithSerialNumber', () => {
         const expectedNumber = 0;
 
         // Actual instance
-        const serialNumberResponder = new SerialNumberResponder();
         // @ts-ignore
-        const msg = serialNumberResponder.genMessageWithSerialNumber(
+        const msg = SerialNumberResponder.genMessageWithSerialNumber(
             expectedNumber
         );
 
@@ -103,14 +98,14 @@ describe('genMessageWithSerialNumber', () => {
     });
 
     test('Message (named user)', () => {
-        // Expected value
         const testedUser = 'test-user';
+
+        // Expected values
         const expectedMessage = 'Hello test-user!';
 
         // Actual instance
-        const serialNumberResponder = new SerialNumberResponder();
         // @ts-ignore
-        const msg = serialNumberResponder.genMessageWithSerialNumber(
+        const msg = SerialNumberResponder.genMessageWithSerialNumber(
             0,
             testedUser
         );
@@ -119,27 +114,27 @@ describe('genMessageWithSerialNumber', () => {
     });
 
     test('generalizeUser (empty string)', () => {
-        // Expected value
         const testedUser = '';
+
+        // Expected values
         const expectedUser = 'anonymous';
 
-        // Actual instance
-        const serialNumberResponder = new SerialNumberResponder();
+        // Actual value
         // @ts-ignore
-        const user = serialNumberResponder.generalizeUser(testedUser);
+        const user = SerialNumberResponder.generalizeUser(testedUser);
 
         expect(user).toBe(expectedUser);
     });
 
     test('generalizeUser (array)', () => {
-        // Expected value
         const testedUser = ['foo', 'bar'];
+
+        // Expected value
         const expectedUser = 'anonymous';
 
-        // Actual instance
-        const serialNumberResponder = new SerialNumberResponder();
+        // Actual value
         // @ts-ignore
-        const user = serialNumberResponder.generalizeUser(testedUser);
+        const user = SerialNumberResponder.generalizeUser(testedUser);
 
         expect(user).toBe(expectedUser);
     });

@@ -6,23 +6,23 @@ import type { ExpressWrapper } from '../ExpressWrapper';
 type QueryValue = string | Query | (string | Query)[];
 
 class SerialNumberResponder {
-    public getSerialNumber(
+    public static getSerialNumber(
         services: ExpressWrapper['services'],
         req: express.Request,
         res: express.Response
     ) {
-        const user = this.generalizeUser(req.query.user);
+        const user = SerialNumberResponder.generalizeUser(req.query.user);
 
         res.setHeader('Content-Type', 'application/json');
         res.json(
-            this.genMessageWithSerialNumber(
+            SerialNumberResponder.genMessageWithSerialNumber(
                 services.SerialNumber.getNewSerialNumber(user),
                 user
             )
         );
     }
 
-    public getUsers(
+    public static getUsers(
         services: ExpressWrapper['services'],
         req: express.Request,
         res: express.Response
@@ -31,14 +31,14 @@ class SerialNumberResponder {
         res.json(services.SerialNumber.users);
     }
 
-    private genMessageWithSerialNumber(serial: number, user?: string) {
+    private static genMessageWithSerialNumber(serial: number, user?: string) {
         return {
             serial: serial,
             message: `Hello ${user}!`
         };
     }
 
-    private generalizeUser(userRaw: QueryValue): string {
+    private static generalizeUser(userRaw: QueryValue): string {
         return typeof userRaw === typeof '' && userRaw
             ? (userRaw as string)
             : 'anonymous';
