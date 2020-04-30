@@ -33,14 +33,30 @@ describe('main - API endpoint checks', () => {
         await mainPromise;
     });
 
-    test('GET /', async () => {
-        const { httpRes, data } = await promiseGet('http://localhost:58888/');
+    test('GET /serial', async () => {
+        const { httpRes, data } = await promiseGet(
+            'http://localhost:58888/serial?user=test-user'
+        );
 
         expect(httpRes.headers['x-app-version']).toBe('local');
         expect(JSON.parse(data.toString())).toStrictEqual({
             serial: 0,
-            message: 'Hello anonymous!'
+            message: 'Hello test-user!'
         });
+    });
+
+    test('GET /users', async () => {
+        const { httpRes, data } = await promiseGet(
+            'http://localhost:58888/users'
+        );
+
+        expect(httpRes.headers['x-app-version']).toBe('local');
+        expect(JSON.parse(data.toString())).toStrictEqual([
+            {
+                serial: 0,
+                user: 'test-user'
+            }
+        ]);
     });
 
     afterAll(async () => {

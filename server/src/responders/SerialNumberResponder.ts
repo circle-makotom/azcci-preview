@@ -11,22 +11,37 @@ class SerialNumberResponder {
         req: express.Request,
         res: express.Response
     ) {
+        const user = this.generalizeUser(req.query.user);
+
         res.setHeader('Content-Type', 'application/json');
         res.json(
             this.genMessageWithSerialNumber(
-                services.SerialNumber.getNewSerialNumber(),
-                req.query.user
+                services.SerialNumber.getNewSerialNumber(user),
+                user
             )
         );
     }
 
-    private genMessageWithSerialNumber(serial: number, user?: QueryValue) {
+    public getUsers(
+        services: ExpressWrapper['services'],
+        req: express.Request,
+        res: express.Response
+    ) {
+        res.setHeader('Content-Type', 'application/json');
+        res.json(services.SerialNumber.users);
+    }
+
+    private genMessageWithSerialNumber(serial: number, user?: string) {
         return {
             serial: serial,
-            message: `Hello ${
-                typeof user === typeof '' && user ? user : 'anonymous'
-            }!`
+            message: `Hello ${user}!`
         };
+    }
+
+    private generalizeUser(userRaw: QueryValue): string {
+        return typeof userRaw === typeof '' && userRaw
+            ? (userRaw as string)
+            : 'anonymous';
     }
 }
 

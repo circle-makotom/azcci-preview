@@ -84,12 +84,16 @@ class ExpressWrapper {
     }
 
     private armEndpoints() {
-        this.app.get('/', (req, res) =>
+        this.app.get('/serial', (req, res) =>
             this.responders.SerialNumber.getSerialNumber(
                 this.services,
                 req,
                 res
             )
+        );
+
+        this.app.get('/users', (req, res) =>
+            this.responders.SerialNumber.getUsers(this.services, req, res)
         );
     }
 }

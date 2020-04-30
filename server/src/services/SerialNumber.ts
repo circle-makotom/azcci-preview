@@ -1,12 +1,22 @@
 class SerialNumber {
-    private counter: number = 0;
+    public curSerial: number = 0;
+    public users: { serial: number; user: string }[] = [];
 
     constructor(init: number = 0) {
-        this.counter = init;
+        this.curSerial = init;
     }
 
-    public getNewSerialNumber(): number {
-        return this.counter++;
+    public getNewSerialNumber(user: string = ''): number {
+        const serial = this.curSerial;
+
+        this.users.push({
+            serial,
+            user
+        });
+
+        this.curSerial += 1;
+
+        return serial;
     }
 }
 
