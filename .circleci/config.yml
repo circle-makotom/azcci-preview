@@ -72,10 +72,10 @@ jobs:
             echo "export __BUILD_VERSION=\"$(cat version.txt)\"" >> $BASH_ENV
       - docker/check
       - docker/build:
-          image: makotom/decode-server-preview
+          image: $DOCKER_IMAGE_NAME
           tag: $__BUILD_VERSION
       - docker/push:
-          image: makotom/decode-server-preview
+          image: $DOCKER_IMAGE_NAME
           tag: $__BUILD_VERSION
 
   test:
@@ -106,7 +106,7 @@ workflows:
           requires:
             - install-dependencies
       - build-docker-image:
-          context: docker-hub
+          context: acr-decode
           requires:
             - build-production
       - test:
