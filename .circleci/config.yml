@@ -4,31 +4,20 @@ orbs:
   docker: circleci/docker@1.0.1
 
 jobs:
-  compute-version:
-    docker:
-      - image: alpine
-    steps:
-      - checkout
-      - run:
-          name: Compute a version designator and write it to a text file
-          command: echo "0.0.${CIRCLE_BUILD_NUM}-${CIRCLE_SHA1:0:7}" | tee version.txt
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
-
-  install-dependencies:
+  prepare-dependencies:
     docker:
       - image: node:current-alpine
     steps:
-      - attach_workspace:
-          at: ./
+      - checkout
+      - run:
+          name: Compute version
+          command: echo "0.0.${CIRCLE_BUILD_NUM}-${CIRCLE_SHA1:0:7}" | tee version.txt
       - restore_cache:
           keys:
             - yarn-deps-{{ checksum "yarn.lock" }}
             - yarn-deps
       - run:
-          name: Install dependencies
+          name: yarn install
           command: yarn install
       - save_cache:
           paths:
@@ -122,20 +111,17 @@ workflows:
   version: 2
   build-test-deploy:
     jobs:
-      - compute-version
-      - install-dependencies:
-          requires:
-            - compute-version
+      - prepare-dependencies
       - build-production:
           requires:
-            - install-dependencies
+            - prepare-dependencies
       - build-docker-image:
           context: acr-decode
           requires:
             - build-production
       - test:
           requires:
-            - install-dependencies
+            - prepare-dependencies
       - wait-deploy-approval:
           type: approval
           requires:
