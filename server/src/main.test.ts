@@ -28,9 +28,16 @@ const promiseGet = (url: string, options = {}) => {
     );
 };
 
-describe('main - API endpoint checks', () => {
+describe('API endpoint checks', () => {
     beforeAll(async () => {
         await mainPromise;
+    });
+
+    test('GET /', async () => {
+        const { httpRes, data } = await promiseGet('http://localhost:58888/');
+
+        expect(httpRes.headers['x-app-version']).toBe('local');
+        expect(JSON.parse(data.toString())).toStrictEqual('local');
     });
 
     test('GET /serial', async () => {

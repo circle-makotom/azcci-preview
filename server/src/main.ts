@@ -1,6 +1,7 @@
 import { ExpressWrapper } from './ExpressWrapper';
 
 import { SerialNumberResponder } from './responders/SerialNumberResponder';
+import { VersionNumberResponder } from './responders/VersionNumberResponder';
 
 class MainApp {
     public expWrapper = new ExpressWrapper();
@@ -16,6 +17,11 @@ class MainApp {
     }
 
     private armResponders() {
+        this.expWrapper.armEndpoint(
+            'GET',
+            '/',
+            VersionNumberResponder.getVersion
+        );
         this.expWrapper.armEndpoint(
             'GET',
             '/serial',
