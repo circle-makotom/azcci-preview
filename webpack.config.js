@@ -25,7 +25,7 @@ module.exports = (env, argv) => {
             new webpack.DefinePlugin({
                 __BUILD_VERSION: JSON.stringify(
                     `${argv.mode === 'production' ? 'prod' : 'devel'}-${
-                        process.env.DECODE_BUILD_VERSION || 'unversioned'
+                        process.env.__BUILD_VERSION || 'unversioned'
                     }`
                 )
             })
