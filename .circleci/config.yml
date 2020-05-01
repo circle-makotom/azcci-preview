@@ -33,7 +33,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: yarn-deps-{{ checksum "yarn.lock" }}
+          key: yarn-deps-{{ checksum "yarn.lock" }}-{{ epoch }}
       - store_artifacts:
           path: yarn.lock
       - persist_to_workspace:
@@ -76,6 +76,7 @@ jobs:
           tag: $__BUILD_VERSION
       - docker/push:
           image: makotom/decode-server-preview
+          tag: $__BUILD_VERSION
           digest-path: digest.txt
       - run:
           name: Show Docker image digest
