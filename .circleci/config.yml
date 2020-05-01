@@ -97,8 +97,7 @@ workflows:
           requires:
             - compute-version
       - build-production:
-          contexts:
-            - docker-hub
+          context: docker-hub
           requires:
             - install-dependencies
       - test:
