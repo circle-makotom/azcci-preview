@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   compute-version:
@@ -14,7 +14,7 @@ jobs:
           paths:
             - ./
 
-  server-install-dependencies:
+  install-dependencies:
     docker:
       - image: node:current-alpine
     steps:
@@ -22,43 +22,51 @@ jobs:
           at: ./
       - restore_cache:
           keys:
-            - yarn-deps-{{ checksum "server/yarn.lock" }}
+            - yarn-deps-{{ checksum "yarn.lock" }}
             - yarn-deps
       - run:
           name: Install dependencies
           command: yarn install
-          working_directory: server
       - save_cache:
           paths:
-            - server/node_modules
-          key: yarn-deps-{{ checksum "server/yarn.lock" }}
+            - node_modules
+          key: yarn-deps-{{ checksum "yarn.lock" }}
       - store_artifacts:
-          path: server/yarn.lock
+          path: yarn.lock
       - persist_to_workspace:
           root: ./
           paths:
             - ./
 
-  server-build-production:
+  build-production:
     docker:
       - image: node:current-alpine
     steps:
       - attach_workspace:
           at: ./
       - run:
+          name: Setup __BUILD_VERSION envvar
+          command: echo "export __BUILD_VERSION=$(cat version.txt)" >> $BASH_ENV
+      - run:
           name: Production build
           command: |
-            export DECODE_BUILD_VERSION=$(cat ../version.txt)
             yarn build
-          working_directory: server
       - store_artifacts:
-          path: server/dist/server.js
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
+          path: dist/server.js
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - docker/check
+      - docker/build:
+          image: makotom/decode-server-preview
+          tag: $__BUILD_VERSION
+      - docker/push:
+          image: makotom/decode-server-preview
+          digest: digest.txt
+      - run:
+          name: Show Docker image digest
+          command: cat digest.txt
 
-  server-test:
+  test:
     docker:
       - image: node:current-alpine
     parallelism: 2
@@ -69,32 +77,27 @@ jobs:
           name: Run tests
           command: |
             circleci tests glob '**/*.test.ts' | circleci tests split --split-by timings | xargs yarn test:ci
-          working_directory: server
       - store_artifacts:
-          path: server/test-results
+          path: test-results
       - store_test_results:
-          path: server/test-results
+          path: test-results
 
 workflows:
   version: 2
-  build-test-deploy-server:
+  build-test-deploy:
     jobs:
       - compute-version
-      - server-install-dependencies:
+      - install-dependencies:
           requires:
             - compute-version
-      - server-build-production:
+      - build-production:
           requires:
-            - server-install-dependencies
-      - server-test:
+            - install-dependencies
+      - test:
           requires:
-            - server-install-dependencies
-      - server-deploy-approval:
+            - install-dependencies
+      - deploy-approval:
           type: approval
           requires:
-            - server-build-production
-            - server-test
-
-  build-test-deploy-client:
-    jobs:
-      - compute-version
+            - build-production
+            - test
