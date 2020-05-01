@@ -77,10 +77,6 @@ jobs:
       - docker/push:
           image: makotom/decode-server-preview
           tag: $__BUILD_VERSION
-          digest-path: digest.txt
-      - run:
-          name: Show Docker image digest
-          command: cat digest.txt
 
   test:
     docker:
