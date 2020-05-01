@@ -45,27 +45,35 @@ jobs:
     docker:
       - image: node:current-alpine
     steps:
+      - attach_workspace:
+          at: ./
       - run:
-          name: Install bash
-          command: apk add bash
+          name: Production build
+          command: |
+            export __BUILD_VERSION="$(cat version.txt)"
+            yarn build
+      - store_artifacts:
+          path: dist/server.js
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  build-docker-image:
+    machine:
+      image: ubuntu-1604:202004-01
+      docker_layer_caching: true
+    steps:
       - attach_workspace:
           at: ./
       - run:
           name: Setup __BUILD_VERSION envvar
-          command: echo "export __BUILD_VERSION=$(cat version.txt)" >> $BASH_ENV
-      - run:
-          name: Production build
-          command: yarn build
-          shell: bash -eo pipefail
-      - store_artifacts:
-          path: dist/server.js
-      - setup_remote_docker:
-          docker_layer_caching: true
+          command: |
+            echo "export __BUILD_VERSION=\"$(cat version.txt)\"" >> $BASH_ENV
       - docker/check
       - docker/build:
           image: makotom/decode-server-preview
           tag: $__BUILD_VERSION
-          shell: bash -eo pipefail
       - docker/push:
           image: makotom/decode-server-preview
           digest-path: digest.txt
