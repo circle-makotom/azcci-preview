@@ -75,6 +75,7 @@ jobs:
       - docker/build:
           image: $DOCKER_IMAGE_NAME
           tag: $__BUILD_VERSION
+          registry: $DOCKER_REGISTRY
       - docker/push:
           image: $DOCKER_IMAGE_NAME
           tag: $__BUILD_VERSION
