@@ -45,6 +45,9 @@ jobs:
     docker:
       - image: node:current-alpine
     steps:
+      - run:
+          name: Install bash
+          command: apk add bash
       - attach_workspace:
           at: ./
       - run:
@@ -94,6 +97,8 @@ workflows:
           requires:
             - compute-version
       - build-production:
+          contexts:
+            - docker-hub
           requires:
             - install-dependencies
       - test:
