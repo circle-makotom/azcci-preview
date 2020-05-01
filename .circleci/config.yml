@@ -102,6 +102,8 @@ jobs:
       image: ubuntu-1604:202004-01
       docker_layer_caching: true
     steps:
+      - attach_workspace:
+          at: ./
       - run:
           name: Setup __BUILD_VERSION envvar
           command: |
@@ -143,5 +145,6 @@ workflows:
             - build-docker-image
             - test
       - deploy-docker-image:
+          context: acr-decode
           requires:
             - wait-deploy-approval
