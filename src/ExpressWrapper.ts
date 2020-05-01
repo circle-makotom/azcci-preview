@@ -23,7 +23,9 @@ class ExpressWrapper {
     }
 
     public startListening(): Promise<ExpressWrapper['httpServers']> {
-        return new Promise(this.startListeningPromiseWorker.bind(this));
+        return new Promise<ExpressWrapper['httpServers']>(
+            this.startListeningPromiseWorker.bind(this)
+        );
     }
 
     private async startListeningPromiseWorker(
@@ -51,7 +53,7 @@ class ExpressWrapper {
                     } catch (err) {
                         reject(err);
                     }
-                }).catch(console.error.bind(console));
+                });
             });
 
             for (const promise of promises) {
@@ -71,7 +73,9 @@ class ExpressWrapper {
     ) {
         res.setHeader(
             'X-App-Version',
-            typeof __BUILD_VERSION === typeof '' ? __BUILD_VERSION : 'local'
+            typeof __BUILD_VERSION === typeof '' && __BUILD_VERSION
+                ? __BUILD_VERSION
+                : 'local'
         );
         next();
     }

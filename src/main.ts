@@ -37,6 +37,6 @@ class MainApp {
 
 const mainPromise: Promise<
     ExpressWrapper['httpServers']
-> = new MainApp().startListening();
+> = new MainApp().startListening().catch(console.error.bind(console));
 
 export { mainPromise };
