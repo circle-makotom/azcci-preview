@@ -106,9 +106,12 @@ workflows:
           requires:
             - compute-version
       - build-production:
-          context: docker-hub
           requires:
             - install-dependencies
+      - build-docker-image:
+          context: docker-hub
+          requires:
+            - build-production
       - test:
           requires:
             - install-dependencies
@@ -116,4 +119,5 @@ workflows:
           type: approval
           requires:
             - build-production
+            - build-docker-image
             - test
