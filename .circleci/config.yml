@@ -97,6 +97,27 @@ jobs:
       - store_test_results:
           path: test-results
 
+  deploy-docker-image:
+    machine:
+      image: ubuntu-1604:202004-01
+      docker_layer_caching: true
+    steps:
+      - run:
+          name: Setup __BUILD_VERSION envvar
+          command: |
+            echo "export __BUILD_VERSION=\"$(cat version.txt)\"" >> $BASH_ENV
+      - docker/check:
+          registry: $DOCKER_REGISTRY
+      - docker/pull:
+          image: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION
+      - run:
+          name: Make built image tagged as latest
+          command: docker tag $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
+      - docker/push:
+          image: $DOCKER_IMAGE_NAME
+          tag: $__BUILD_VERSION
+          registry: $DOCKER_REGISTRY
+
 workflows:
   version: 2
   build-test-deploy:
@@ -115,9 +136,12 @@ workflows:
       - test:
           requires:
             - install-dependencies
-      - deploy-approval:
+      - wait-deploy-approval:
           type: approval
           requires:
             - build-production
             - build-docker-image
             - test
+      - deploy-docker-image:
+          requires:
+            - wait-deploy-approval
