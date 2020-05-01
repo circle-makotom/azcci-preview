@@ -46,6 +46,7 @@ class ExpressWrapper {
                                 resolve(server);
                             }
                         );
+
                         this.httpServers.push(server);
                     } catch (err) {
                         reject(err);
