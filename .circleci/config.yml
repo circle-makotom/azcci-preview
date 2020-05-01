@@ -111,7 +111,7 @@ jobs:
       - docker/pull:
           images: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION
       - run:
-          name: Make built image tagged as latest
+          name: Tag the image as latest
           command: docker tag $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
       - docker/push:
           image: $DOCKER_IMAGE_NAME
