@@ -55,8 +55,8 @@ jobs:
           command: echo "export __BUILD_VERSION=$(cat version.txt)" >> $BASH_ENV
       - run:
           name: Production build
-          command: |
-            yarn build
+          command: yarn build
+          shell: bash -eo pipefail
       - store_artifacts:
           path: dist/server.js
       - setup_remote_docker:
@@ -65,6 +65,7 @@ jobs:
       - docker/build:
           image: makotom/decode-server-preview
           tag: $__BUILD_VERSION
+          shell: bash -eo pipefail
       - docker/push:
           image: makotom/decode-server-preview
           digest-path: digest.txt
