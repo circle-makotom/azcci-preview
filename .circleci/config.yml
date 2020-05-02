@@ -10,7 +10,7 @@ jobs:
         steps:
             - checkout
             - run:
-                  name: Compute version
+                  name: Compute version number
                   command: echo "0.0.${CIRCLE_BUILD_NUM}-${CIRCLE_SHA1:0:7}" | tee version.txt
             - restore_cache:
                   keys:
@@ -122,13 +122,19 @@ workflows:
             - test:
                   requires:
                       - prepare-dependencies
-            - wait-deploy-approval:
-                  type: approval
+#            - wait-deploy-approval:
+#                  type: approval
+#                  requires:
+#                      - build-production
+#                      - build-docker-image
+#                      - test
+#            - deploy-docker-image:
+#                  context: acr-decode
+#                  requires:
+#                      - wait-deploy-approval
+            - deploy-docker-image:
+                  context: acr-decode
                   requires:
                       - build-production
                       - build-docker-image
                       - test
-            - deploy-docker-image:
-                  context: acr-decode
-                  requires:
-                      - wait-deploy-approval
