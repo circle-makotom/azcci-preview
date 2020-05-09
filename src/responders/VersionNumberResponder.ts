@@ -10,7 +10,7 @@ class VersionNumberResponder {
         req: express.Request,
         res: express.Response
     ) {
-        res.setHeader('Content-Type', 'application/json');
+        res.set('Content-Type', 'application/json');
         res.json(
             typeof __BUILD_VERSION === typeof '' ? __BUILD_VERSION : 'local'
         );

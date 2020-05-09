@@ -13,7 +13,7 @@ class SerialNumberResponder {
     ) {
         const user = SerialNumberResponder.generalizeUser(req.query.user);
 
-        res.setHeader('Content-Type', 'application/json');
+        res.set('Content-Type', 'application/json');
         res.json(
             SerialNumberResponder.genMessageWithSerialNumber(
                 services.SerialNumber.getNewSerialNumber(user),
@@ -27,7 +27,7 @@ class SerialNumberResponder {
         req: express.Request,
         res: express.Response
     ) {
-        res.setHeader('Content-Type', 'application/json');
+        res.set('Content-Type', 'application/json');
         res.json(services.SerialNumber.users);
     }
 

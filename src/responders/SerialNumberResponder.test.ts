@@ -33,7 +33,7 @@ const mockReq = (user?: string) => {
 
 const mockRes = () => {
     return {
-        setHeader: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis()
     };
 };
@@ -50,8 +50,8 @@ describe('getSerialNumber', () => {
     );
 
     test('header', () => {
-        expect(res.setHeader.mock.calls[0][0]).toBe('Content-Type');
-        expect(res.setHeader.mock.calls[0][1]).toBe('application/json');
+        expect(res.set.mock.calls[0][0]).toBe('Content-Type');
+        expect(res.set.mock.calls[0][1]).toBe('application/json');
     });
 
     test('body', () => {
@@ -74,8 +74,8 @@ describe('getUsers', () => {
     );
 
     test('header', () => {
-        expect(res.setHeader.mock.calls[0][0]).toBe('Content-Type');
-        expect(res.setHeader.mock.calls[0][1]).toBe('application/json');
+        expect(res.set.mock.calls[0][0]).toBe('Content-Type');
+        expect(res.set.mock.calls[0][1]).toBe('application/json');
     });
 
     test('body', () => {
