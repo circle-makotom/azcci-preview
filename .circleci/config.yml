@@ -26,16 +26,16 @@ jobs:
             - store_artifacts:
                   path: yarn.lock
             - persist_to_workspace:
-                  root: ./
+                  root: .
                   paths:
-                      - ./
+                      - .
 
     build-production:
         docker:
             - image: node:current-alpine
         steps:
             - attach_workspace:
-                  at: ./
+                  at: .
             - run:
                   name: Production build
                   command: |
@@ -44,16 +44,16 @@ jobs:
             - store_artifacts:
                   path: dist/server.js
             - persist_to_workspace:
-                  root: ./
+                  root: .
                   paths:
-                      - ./
+                      - .
 
     build-docker-image:
         machine:
             image: ubuntu-1604:202004-01
         steps:
             - attach_workspace:
-                  at: ./
+                  at: .
             - run:
                   name: Setup __BUILD_VERSION envvar
                   command: |
@@ -75,7 +75,7 @@ jobs:
         parallelism: 2
         steps:
             - attach_workspace:
-                  at: ./
+                  at: .
             - run:
                   name: Run tests
                   command: |
@@ -90,7 +90,7 @@ jobs:
             image: ubuntu-1604:202004-01
         steps:
             - attach_workspace:
-                  at: ./
+                  at: .
             - run:
                   name: Setup __BUILD_VERSION envvar
                   command: |
