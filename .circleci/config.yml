@@ -135,6 +135,5 @@ workflows:
             - deploy-docker-image:
                   context: docker-hub
                   requires:
-                      - build-production
                       - build-docker-image
                       - test
