@@ -116,7 +116,7 @@ workflows:
                   requires:
                       - prepare-dependencies
             - build-docker-image:
-                  context: acr-decode
+                  context: docker-hub
                   requires:
                       - build-production
             - test:
@@ -133,7 +133,7 @@ workflows:
 #                  requires:
 #                      - wait-deploy-approval
             - deploy-docker-image:
-                  context: acr-decode
+                  context: docker-hub
                   requires:
                       - build-production
                       - build-docker-image
