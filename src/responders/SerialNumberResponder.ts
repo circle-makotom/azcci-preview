@@ -3,6 +3,8 @@ import type { Query } from 'express-serve-static-core';
 
 import type { ExpressWrapper } from '../ExpressWrapper';
 
+declare const __BUILD_VERSION: string;
+
 type QueryValue = string | Query | (string | Query)[];
 
 class SerialNumberResponder {
@@ -33,6 +35,10 @@ class SerialNumberResponder {
 
     private static genMessageWithSerialNumber(serial: number, user?: string) {
         return {
+            version:
+                typeof __BUILD_VERSION === typeof ''
+                    ? __BUILD_VERSION
+                    : 'local',
             serial: serial,
             message: `Hello ${user}!`
         };

@@ -47,6 +47,7 @@ describe('API endpoint checks', () => {
 
         expect(httpRes.headers['x-app-version']).toBe('local');
         expect(JSON.parse(data.toString())).toStrictEqual({
+            version: 'local',
             serial: 0,
             message: 'Hello test-user!'
         });

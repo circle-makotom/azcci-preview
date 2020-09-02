@@ -56,6 +56,7 @@ describe('getSerialNumber', () => {
 
     test('body', () => {
         expect(res.json.mock.calls[0][0]).toStrictEqual({
+            version: 'local',
             serial: 0,
             message: 'Hello test-user!'
         });
