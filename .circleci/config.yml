@@ -97,8 +97,6 @@ jobs:
             echo "export __BUILD_VERSION=\"$(cat version.txt)\"" >> $BASH_ENV
       - docker/check:
           registry: $DOCKER_REGISTRY
-      - docker/pull:
-          images: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION
       - run:
           name: Tag the image as latest
           command: docker tag $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
