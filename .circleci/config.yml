@@ -87,23 +87,31 @@ jobs:
 
   deploy-docker-image:
     machine:
-      image: ubuntu-1604:202004-01
+      image: ubuntu-2004:202008-01
     steps:
       - attach_workspace:
           at: .
       - run:
           name: Setup __BUILD_VERSION envvar
           command: |
-            echo "export __BUILD_VERSION=\"$(cat version.txt)\"" >> $BASH_ENV
+            echo "export __BUILD_VERSION=\"$(cat version.txt)\"" | tee -a $BASH_ENV
+      - run:
+          name: Enable `docker manifest` command
+          command: |
+            mkdir -p ~/.docker
+            if [ ! -f ~/.docker/config.json ]
+            then
+              echo '{}' > ~/.docker/config.json
+            fi
+
+            cat <<< $(jq '.experimental = "enabled"' ~/.docker/config.json)
       - docker/check:
           registry: $DOCKER_REGISTRY
       - run:
-          name: Tag the image as latest
-          command: docker tag $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
-      - docker/push:
-          image: $DOCKER_IMAGE_NAME
-          tag: latest
-          registry: $DOCKER_REGISTRY
+          name: Update `latest` tag with the version
+          command: |
+            docker manifest create $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$__BUILD_VERSION
+            docker manifest push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
 
 workflows:
   version: 2
