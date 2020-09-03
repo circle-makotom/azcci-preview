@@ -49,7 +49,7 @@ describe('API endpoint checks', () => {
         expect(JSON.parse(data.toString())).toStrictEqual({
             version: 'local',
             serial: 0,
-            message: 'Hi test-user!'
+            message: 'Greetings test-user!'
         });
     });
 
