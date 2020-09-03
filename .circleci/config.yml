@@ -104,7 +104,7 @@ jobs:
               echo '{}' > ~/.docker/config.json
             fi
 
-            cat \<\<\< $(jq '.experimental = "enabled"' ~/.docker/config.json)
+            cat <<#< $(jq '.experimental = "enabled"' ~/.docker/config.json) > ~/.docker/config.json
       - docker/check:
           registry: $DOCKER_REGISTRY
       - run:
