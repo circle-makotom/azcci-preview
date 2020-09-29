@@ -40,7 +40,7 @@ class SerialNumberResponder {
                     ? __BUILD_VERSION
                     : 'local',
             serial: serial,
-            message: `Konnichiwa, ${user}!`
+            message: `Hello, ${user}!`
         };
     }
 
