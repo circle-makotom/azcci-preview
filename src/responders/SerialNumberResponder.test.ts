@@ -58,7 +58,7 @@ describe('getSerialNumber', () => {
         expect(res.json.mock.calls[0][0]).toStrictEqual({
             version: 'local',
             serial: 0,
-            message: 'Hello, test-user!'
+            message: 'Konnichiwa, test-user!'
         });
     });
 });
@@ -102,7 +102,7 @@ describe('genMessageWithSerialNumber', () => {
         const testedUser = 'test-user';
 
         // Expected values
-        const expectedMessage = 'Hello, test-user!';
+        const expectedMessage = 'Konnichiwa, test-user!';
 
         // Actual instance
         // @ts-ignore
