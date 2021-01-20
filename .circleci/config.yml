@@ -133,7 +133,13 @@ workflows:
           requires:
             - build-docker-image
             - test
+          filters:
+            branches:
+              only: master
       - deploy-docker-image:
           context: acr
           requires:
             - wait-deploy-approval
+          filters:
+            branches:
+              only: master
