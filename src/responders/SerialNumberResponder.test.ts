@@ -102,7 +102,7 @@ describe('genMessageWithSerialNumber', () => {
         const testedUser = 'test-user';
 
         // Expected values
-        const expectedMessage = 'Hello, test-user!';
+        const expectedMessage = 'Hello, test-user.';
 
         // Actual instance
         // @ts-ignore
